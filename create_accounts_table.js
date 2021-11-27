@@ -8,9 +8,9 @@ const mysql = require("mysql");
 
 const dbCon = mysql.createConnection({
     host: "cse-mysql-classes-01.cse.umn.edu",
-    user: "XXXX",             // replace with the database user provided to you
-    password: "XXXX",         // replace with the database password provided to you
-    database: "XXXX",         // replace with the database user provided to you
+    user: "C4131F21U20",             // replace with the database user provided to you
+    password: "430",         // replace with the database password provided to you
+    database: "C4131F21U20",         // replace with the database user provided to you
     port: 3306
 });
 
@@ -28,7 +28,7 @@ dbCon.connect(function (err) {
         acc_password VARCHAR(200),
         PRIMARY KEY (acc_id)
     )`;
-    
+
     console.log("Attempting to create table: tbl_accounts");
     dbCon.query(sql, function (err, result) {
         if (err) {

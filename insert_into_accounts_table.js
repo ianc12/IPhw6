@@ -9,9 +9,9 @@ const bcrypt = require('bcrypt');
 
 const dbCon = mysql.createConnection({
     host: "cse-mysql-classes-01.cse.umn.edu",
-    user: "XXXX",       // replace with the database user provided to you
-    password: "XXXX",   // replace with the database password provided to you
-    database: "XXXX",   // replace with the database user provided to you
+    user: "C4131F21U20",             // replace with the database user provided to you
+    password: "430",         // replace with the database password provided to you
+    database: "C4131F21U20",         // replace with the database user provided to you
     port: 3306
 });
 
@@ -28,9 +28,9 @@ dbCon.connect(function (err) {
     const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
 
     const rowToBeInserted = {
-        acc_name: 'charlie',        // replace with acc_name chosen by you OR retain the same value
-        acc_login: 'charlie',       // replace with acc_login chosen by you OR retain the same value
-        acc_password: passwordHash  // replace with acc_password chosen by you OR retain the same value
+        acc_name: 'ian',        // replace with acc_name chosen by you OR retain the same value
+        acc_login: 'ian',       // replace with acc_login chosen by you OR retain the same value
+        acc_password: ianHash  // replace with acc_password chosen by you OR retain the same value
     };
 
     console.log("Attempting to insert record into tbl_accounts");
