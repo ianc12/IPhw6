@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <title>Login</title>
+    </head>
+    <body>
+        <nav>
+            <p>
+                <span><strong>Navigation</strong></span><br><br>
+                <a href="/">Home</a>
+                <span>|</span>
+                <a href="/allEvents">All Events</a>
+                <span>|</span>
+                <a href="/schedule">Schedule</a>
+                <span>|</span>
+                <a href="/addEvent">Add Event</a>
+                <span>|</span>
+                <a href="/logout">Log Out</a>
+            </p>
+        </nav>
+        <div id="responseField">
+
+        </div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="">
+        <br>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" value="">
+        <br>
+        <button type="button" name="button" onclick="login()">Log In</button>
+    <script type="text/javascript">
+        let response = $("#responseField");
+        function responseReceivedHandler() {
+            if (this.status == 200) {
+                let valid = this.response.auth;
+                if (valid) {
+                    response.append("<p class='valid'>User authenticated, redirecting...</p>");
+                    window.location.replace("/allEvents");
+                }
+                else {
+                    response.append("<p class='Error'>Incorrect username or password</p>");
+                }
+            } else {
+                response.empty();
+                response.append("<p class='error'>Problem conecting to ")
+            }
+        }
+        function login() {
+            console.log("Attempted login");
+            let xhr = new XMLHttpRequest();
+            xhr.addEventListener("load", responseReceivedHandler);
+            xhr.responseType = "json";
+            let username = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
+            let title = document.getElementById("title");
+            let queryString = `username=${username}&password=${pass}`;
+            console.log(queryString);
+             xhr.open("GET", "loginAttempt?" + queryString);
+             xhr.send();
+        }
+    </script>
+
+    </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <title>All Events</title>
+    </head>
+    <body>
+        <nav>
+            <p>
+                <span><strong>Navigation</strong></span><br><br>
+                <a href="/">Home</a>
+                <span>|</span>
+                <a href="/allEvents">All Events</a>
+                <span>|</span>
+                <a href="/schedule">Schedule</a>
+                <span>|</span>
+                <a href="/addEvent">Add Event</a>
+                <span>|</span>
+                <a href="/logout">Log Out</a>
+            </p>
+        </nav><br>
+        <div class="container">
+          <table id="scheduleTable">
+            <thead>
+              <tr>
+                <th scope='col'>Day</th>
+                <th scope="col">Name</th>
+                <th scope="col">Time</th>
+                <th scope="col">Location</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Extra Information</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <script>
+        function responseReceivedHandler() {
+            let tbody = $('#scheduleTable tbody');
+            if (this.status === 200) {
+                let events = this.response;
+                let days = ['monday', 'tuesday', 'wednesday',
+                            'thursday', 'friday', 'saturday', 'sunday'];
+                for (d of days){
+                    let schedule = events[d];
+                    for (a of schedule) {
+                        html = "";
+                        html += "<tr>";
+                        html += `<td>${d}</td><td>${a.event}</td><td>${a.start}-${a.end}</td><td>${a.location}</td><td>${a.phone}</td><td><a href=${a.url}>${a.info}</a></td>`;
+                        html += "</tr>";
+                        tbody.append(html);
+                    }
+                }
+            }
+            else {
+                console.log("Error getting schedule");
+            }
+        }
+         function formTable() {
+           clearTable();
+           let xhr = new XMLHttpRequest();
+           xhr.addEventListener("load", responseReceivedHandler);
+           xhr.responseType = "json";
+           let title = document.getElementById("title");
+            xhr.open("GET", "getAll");
+            xhr.send();
+         }
+
+         function clearTable() {
+           $('#scheduleTable tbody').empty();
+         }
+         formTable();
+        </script>
+    </body>
+</html>
