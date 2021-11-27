@@ -3,7 +3,16 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
     <title>Add Event</title>
   </head>
   <body>
@@ -27,7 +36,7 @@
             id="addEvent">
         <div class="form-group">
           <label for="nameInput">Event</label>
-          <input type="text" id="nameInput" class="form-control" name="event"
+          <input type="text" id="nameInput" class="form-control" name="event_event"
                  pattern="[a-zA-Z0-9\s]+" title="Event must be alphanumeric"
                  required="">
           <small id="eventHelp" class="form-text text-muted">
@@ -35,7 +44,7 @@
         </div>
         <div class="form-group">
           <label for="dayInput">Day of Week</label>
-          <select id="dayInput" class="form-control" name="day">
+          <select id="dayInput" class="form-control" name="event_day">
             <option>
               Sunday
             </option>
@@ -62,31 +71,31 @@
         <div class="form-group">
           <label for="startTimeInput">Start</label>
           <input id="startTimeInput" type="time" class="form-control"
-                 name="start" required="">
+                 name="event_start" required="">
         </div>
         <div class="form-group">
           <label for="endTimeInput">End</label>
           <input id="endTimeInput" type="time" class="form-control"
-                 name="end" required="">
+                 name="event_end" required="">
         </div>
         <div class="form-group">
           <label for="phoneInput">Phone</label>
-          <input id="phoneInput" type="text" class="form-control" name="phone"
+          <input id="phoneInput" type="text" class="form-control" name="event_phone"
                  required="">
         </div>
         <div class="form-group">
           <label for="locationInput">Location</label>
-          <input type="text" class="form-control" name="location"
+          <input type="text" class="form-control" name="event_location"
                  id="locationInput" required="" value="">
         </div>
         <div class="form-group">
           <label for="extraInput">Extra Info</label>
-          <input id="extraInput" type="text" class="form-control" name="info"
+          <input id="extraInput" type="text" class="form-control" name="event_info"
                  required="">
         </div>
         <div class="form-group">
           <label for="urlInput">Enter URL for the Extra Info</label>
-          <input id="urlInput" type="url" class="form-control" name="url"
+          <input id="urlInput" type="url" class="form-control" name="event_url"
                  required="">
         </div>
         <button type="submit" class="btn btn-block btn-primary">Submit</button>

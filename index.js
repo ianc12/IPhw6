@@ -48,13 +48,80 @@ app.use(session({
 }
 ));
 
+function getJsonEvents() {
+    jsonobj = {monday:[], tuesday:[], wednesday:[],
+               thursday:[], friday:[], saturday:[], sunday:[]};
+    dbCon.connect(function (err) {
+        if (err) {
+            throw err;
+        }
+        console.log("Connected to database!");
 
-function getAll(req, res) {
-   //Replace with query to DB
-   fs.readFile('schedule.json', (err, json) => {
-    if (err) {
-      throw err;
+        const sql = 'SELECT * from tbl_events';
+
+        console.log("Attempting to create table: tbl_accounts");
+        dbCon.query(sql, function (err, result) {
+            if (err) {
+                throw err;
+            }
+            for (r of result) {
+                jsonobj[r.event_day]
+            }
+        });
+
+        dbCon.end();
+    });
+
+}
+
+function validateUser(user, pass) {
+    function addEventData(body) {
+        dbCon.connect(function (err) {
+            if (err) {
+                throw err;
+            }
+            const sql = "SELECT acc_password from tbl_accounts where acc_login = " + `'${user}';`;
+            dbCon.query(sql, function (err, result) {
+                if (err) {
+                    throw err;
+                }
+                const saltRounds = 10;
+                const myPlaintextPassword = pass;  // here is your password
+                const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
+
+                for (r of result) {
+                    jsonobj[r.event_day]
+                }
+            });
+
+            dbCon.end();
+        });
     }
+
+}
+
+
+function addEventData(body) {
+    dbCon.connect(function (err) {
+        if (err) {
+            throw err;
+        }
+        const sql = 'INSERT tbl_events SET ?';
+        dbCon.query(sql, body, function (err, result) {
+            if (err) {
+                throw err;
+            }
+            console.log("Inserted event");
+        });
+
+        dbCon.end();
+    });
+}
+
+
+
+function getAll(req, res, json) {
+   //Replace with query to DB
     res.statusCode = 200;
     res.setHeader('Content-type', 'application.json');
     res.write(json);
@@ -62,12 +129,8 @@ function getAll(req, res) {
   });
 }
 
-function getSchedule(req, res, query) {
+function getSchedule(req, res, query, json) {
     //Replace with query to DB
-   fs.readFile('schedule.json', (err, json) => {
-    if (err) {
-      throw err;
-    }
     var scheduleObj = JSON.parse(json);
     let arr = scheduleObj[query.day.toLowerCase()];
     res.statusCode = 200;
@@ -77,38 +140,7 @@ function getSchedule(req, res, query) {
   });
 }
 
-function addEventData(query) {
-    let newJson;
-    const data = fs.readFileSync('schedule.json');
-    schedule = JSON.parse(data);
-    arr = schedule[query.day.toLowerCase()];
-    let i = 0;
-    for (; i < arr.length; i++) {
-        let e = arr[i];
-        if (query.start < e.start) break;
-    }
-    arr.splice(i, 0, query);
-    let newjson = JSON.stringify(schedule);
-    //console.log(newjson);
-    fs.writeFileSync('schedule.json', newjson);
 
-}
-
-function addEventData(body) {
-    let newJson;
-    const data = fs.readFileSync('schedule.json');
-    schedule = JSON.parse(data);
-    arr = schedule[query.day.toLowerCase()];
-    let i = 0;
-    for (; i < arr.length; i++) {
-        let e = arr[i];
-        if (query.start < e.start) break;
-    }
-    arr.splice(i, 0, query);
-    let newjson = JSON.stringify(schedule);
-    //console.log(newjson);
-    fs.writeFileSync('schedule.json', newjson);
-}
 
 
 

@@ -24,13 +24,13 @@ dbCon.connect(function (err) {
     console.log("Connected to database!");
 
     const saltRounds = 10;
-    const myPlaintextPassword = 'tango';  // here is your password
+    const myPlaintextPassword = 'ian';  // here is your password
     const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
 
     const rowToBeInserted = {
         acc_name: 'ian',        // replace with acc_name chosen by you OR retain the same value
         acc_login: 'ian',       // replace with acc_login chosen by you OR retain the same value
-        acc_password: ianHash  // replace with acc_password chosen by you OR retain the same value
+        acc_password: passwordHash  // replace with acc_password chosen by you OR retain the same value
     };
 
     console.log("Attempting to insert record into tbl_accounts");
