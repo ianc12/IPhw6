@@ -55,8 +55,6 @@ function getJsonEvents() {
         if (err) {
             throw err;
         }
-        console.log("Connected to database!");
-
         const sql = 'SELECT * from tbl_events';
 
         console.log("Attempting to create table: tbl_accounts");
@@ -65,39 +63,49 @@ function getJsonEvents() {
                 throw err;
             }
             for (r of result) {
-                jsonobj[r.event_day]
+                jsonobj[r.event_day].push( {
+                    event:r.event_event,
+                    start:r.event_start,
+                    end:r.event_end,
+                    location:r.event_location,
+                    phone:r.phone,
+                    url:r.url,
+                    info:r.info
+                });
             }
         });
 
         dbCon.end();
     });
-
+    return JSON.stringify(jsonobj);
 }
 
 function validateUser(user, pass) {
-    function addEventData(body) {
-        dbCon.connect(function (err) {
+    let isValid = false;
+    dbCon.connect(function (err) {
+        if (err) {
+            throw err;
+        }
+        const sql = "SELECT acc_password from tbl_accounts where acc_login = " + `'${user}';`;
+        dbCon.query(sql, function (err, result) {
             if (err) {
                 throw err;
             }
-            const sql = "SELECT acc_password from tbl_accounts where acc_login = " + `'${user}';`;
-            dbCon.query(sql, function (err, result) {
-                if (err) {
-                    throw err;
-                }
-                const saltRounds = 10;
-                const myPlaintextPassword = pass;  // here is your password
-                const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
+            const saltRounds = 10;
+            const myPlaintextPassword = pass;  // here is your password
+            const passwordHash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
 
-                for (r of result) {
-                    jsonobj[r.event_day]
+            for (r of result) {
+                if (r.acc_password == passwordHash) {
+                    isValid = true;
                 }
-            });
+            }
 
-            dbCon.end();
         });
-    }
 
+        dbCon.end();
+    });
+    return isValid;
 }
 
 
@@ -126,7 +134,6 @@ function getAll(req, res, json) {
     res.setHeader('Content-type', 'application.json');
     res.write(json);
     res.end();
-  });
 }
 
 function getSchedule(req, res, query, json) {
@@ -137,7 +144,6 @@ function getSchedule(req, res, query, json) {
     res.setHeader('Content-type', 'application.json');
     res.write(JSON.stringify(arr));
     res.end();
-  });
 }
 
 
@@ -167,16 +173,23 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/loginAttempt', function(req, res) {
-    console.log(`loginattempt with ${req.query.username}, ${req.query.password}`);
     valid = {
         auth: true
     };
     invalid = {
         auth: false
     };
-    req.session.auth = true;
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(valid));
+    v = validateUser(req.query.username, req.query.password);
+    if (v) {
+        req.session.auth = true;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(valid));
+    }
+    else {
+        req.session.auth = false;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(invalid));
+    }
 });
 
 app.get('/allEvents', function(req, res) {
@@ -208,7 +221,7 @@ app.get('/getSchedule', function(req, res) {
         res.redirect('/login');
     }
     else
-    getSchedule(req, res, req.query);
+    getSchedule(req, res, req.query, getJsonEvents());
 });
 
 app.get('/getAll', function(req, res) {
@@ -216,7 +229,7 @@ app.get('/getAll', function(req, res) {
         res.redirect('/login');
     }
     else
-    getAll(req, res);
+    getAll(req, res, getJsonEvents());
 });
 
 
@@ -225,7 +238,7 @@ app.post('/postEventEntry', function(req, res) {
         res.redirect('/login');
     }
     else {
-        console.log(req.body);
+        addEventData(req.body);
         res.redirect("/allEvents");
     }
 
